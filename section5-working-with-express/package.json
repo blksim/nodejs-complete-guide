@@ -1,0 +1,15 @@
+{
+  "name": "section5-working-with-express",
+  "version": "1.0.0",
+  "description": "nodejs complete guide",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "blksim",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0"
+  }
+}
