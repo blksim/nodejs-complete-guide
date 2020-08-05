@@ -10,6 +10,9 @@
   "author": "blksim",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0"
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.3",
+    "express-handlebars": "^5.1.0",
+    "pug": "^3.0.0"
   }
 }
