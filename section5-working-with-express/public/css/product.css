@@ -41,7 +41,7 @@ main {
 .main-header__item a:hover,
 .main-header__item a:active,
 .main-header__item a.active {
-  color: #6200ff;
+  color: #fafaf4;
 }
 
 .product-form {
@@ -64,6 +64,7 @@ main {
 button {
   font: inherit;
   border: 1px solid #6200ff;
+  padding: 8px;
   color: #6200ff;
   background: white;
   border-radius: 3px;
