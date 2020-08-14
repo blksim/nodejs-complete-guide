@@ -65,21 +65,27 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then(product => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect('/');
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
       product.imageUrl = updatedImageUrl;
-      return product.save();
-    })
-    .then(result => {
-      console.log('UPDATED PRODUCT!');
-      res.redirect('/admin/products');
+      return product.save()
+        .then(result => {
+          console.log('UPDATED PRODUCT!');
+          res.redirect('/admin/products');
+        })
     })
     .catch(err => console.log(err));
 };
 
+// 자신이 등록한 상품만 조회
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({
+      userId: req.user._id
+    })
     // .select('title price -_id')
     // .populate('userId', 'name')
     .then(products => {
@@ -93,9 +99,10 @@ exports.getProducts = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+// 삭제 요청한 userId === 상품에 등록된 userId일 때만 삭제
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndRemove(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
