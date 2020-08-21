@@ -67,7 +67,13 @@ mongoose
 .set('useUnifiedTopology', true)
 .connect(MONGODB_URI)
 .then(result => {
-  app.listen(8080);
+  const server = app.listen(8080); // returns new node http server.
+  // it actually exposes a function which reqruies our created server as an argument
+  const io = require('./socket').init(server); // this sets up socket.io
+  // Now this gives us an socket.io object which does set up all the web socket stuff behind the scenes
+  io.on('connection', socket => {
+    console.log('Client connected');
+  });
 })
 .catch(err => console.log(err));
 
