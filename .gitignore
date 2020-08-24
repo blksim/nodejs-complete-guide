@@ -1,4 +1,6 @@
 /.vscode
 /section1
 node_modules/
+server.cert
+server.key
 images/

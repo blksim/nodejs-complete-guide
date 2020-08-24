@@ -14,31 +14,50 @@ class SinglePost extends Component {
 
   componentDidMount() {
     const postId = this.props.match.params.postId;
-    console.log(postId);
-    fetch('http://localhost:8080/feed/post/' + postId, {
-      headers: {
-        Authorization: 'Bearer ' + this.props.token // Bearer -> it's just a convention to kind of identify that the type of token you have and the bearer token is simply an authentication token, you typically use bearer for json web tokens.
-      }
-    })
-      .then(res => {
-        if (res.status !== 200) {
-          throw new Error('Failed to fetch status');
+    const graphqlQuery = {
+      query: `query FetchingSinglePost($postId: ID!){
+       { post(id: $postId) {
+          title
+          content
+          imageUrl
+          creator {
+            name
+          }
+          createdAt
         }
-        return res.json();
-      })
-      .then(resData => {
-        console.log(resData);
-        this.setState({
-          title: resData.post.title,
-          author: resData.post.creator.name,
-          image: 'http://localhost:8080/' + resData.post.imageUrl, 
-          date: new Date(resData.post.createdAt).toLocaleDateString('en-US'),
-          content: resData.post.content
-        });
-      })
-      .catch(err => {
-        console.log(err);
+      },
+      variables: {
+        postId: postId
+      }
+      `
+    }
+    console.log(postId);
+    fetch('http://localhost:8080/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + this.props.token, // Bearer -> it's just a convention to kind of identify that the type of token you have and the bearer token is simply an authentication token, you typically use bearer for json web tokens.
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphqlQuery)
+    })
+    .then(res => {
+      return res.json();
+    })
+    .then(resData => {
+      if (resData.errors) {
+        throw new Error('Fetching post failed!');
+      }
+      this.setState({
+        title: resData.data.post.title,
+        author: resData.data.post.creator.name,
+        image: 'http://localhost:8080/' + resData.data.post.imageUrl, 
+        date: new Date(resData.data.post.createdAt).toLocaleDateString('en-US'),
+        content: resData.data.post.content
       });
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   render() {

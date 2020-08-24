@@ -68,7 +68,16 @@ exports.createPost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.push(post);
     await user.save();
-    io.getIO().emit('posts', { action: 'create', post: { ...post._doc, creator: { _id: req.userId, name: user.name } } }); // send it to all clients
+    io.getIO().emit('posts', {
+      action: 'create',
+      post: {
+        ...post._doc,
+        creator: {
+          _id: req.userId,
+          name: user.name
+        }
+      }
+    }); // send it to all clients
     res.status(201).json({
       message: 'Post created successfully!',
       post: post,
@@ -189,8 +198,3 @@ exports.deletePost = async (req, res, next) => {
     next(err); // this will now go and reach thge next error handling express middleware.
   }
 };
-
-const clearImage = filePath => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, err => console.log(err));
-}
